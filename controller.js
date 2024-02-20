@@ -3,13 +3,13 @@ const apiCEndpointsJSON = require('./endpoints.json')
 
 
 
-exports.getStatus = (req, res) => {
-    res.status(200).send();
+exports.getStatus = (request, response) => {
+    response.status(200).send();
 }
 
-exports.getTopics = (req, res) => {
+exports.getTopics = (request, response) => {
     accessTopics().then((topics) => {
-        res.status(200).send({ topics })
+        response.status(200).send({ topics })
         
     })
     .catch((err) => {
@@ -17,15 +17,25 @@ exports.getTopics = (req, res) => {
     })
 }
 
-exports.getAPI = (req, res) => {
-    console.log(apiCEndpointsJSON, "in controller")
-        res.status(200).send(apiCEndpointsJSON);
+exports.getAPI = (request, response) => {
+    // console.log(apiCEndpointsJSON, "in controller")
+        response.status(200).send(apiCEndpointsJSON);
     }
 
 
 //////////////
 
+exports.getArticleById = (request, response, next) => {
+    const { article_id } = request.params;
+    selectArticleById(article_id).then((article) => {
+        // console.log(article)
+        response.status(200).send({ article });
 
+    }).catch((err) => {
+        next(err)
+    }) 
+
+}; 
 
 
 
@@ -46,7 +56,7 @@ exports.getAPI = (req, res) => {
 
         // .then((endpointData) => {
         //     const parsedEndpointData = JSON.parse(endpointData);
-        //     res.status(200).send({ parsedEndpointData });
+        //     response.status(200).send({ parsedEndpointData });
         
 
 
@@ -54,7 +64,7 @@ exports.getAPI = (req, res) => {
 
 
 //     accessEndoints().then((topics) => {
-//         res.status(200).send({ topics })
+//         response.status(200).send({ topics })
         
 //     })
 //     .catch((err) => {
@@ -62,7 +72,7 @@ exports.getAPI = (req, res) => {
 //     })
 // }
 
-// app.get("/api/owners", (req, res) => {
+// app.get("/api/owners", (request, response) => {
 //     const ownersArr = []
 //     fs.readdir("./data/owners", "utf-8")
 //     .then(allOwnersFiles => {
