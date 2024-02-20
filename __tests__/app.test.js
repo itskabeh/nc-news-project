@@ -3,6 +3,8 @@ const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data/index.js");
 const app = require("../app")
 const request = require("supertest")
+// const fs = require('fs')
+const apiEndpointsJSON = require('../endpoints.json')
 //const sorted = require("sorted")
 
 beforeEach(() => { return seed(data) })
@@ -44,4 +46,34 @@ describe('GET /api/topics', () => {
         })
     })
 })
+
+
+
+describe('GET /api', () => {
+    describe('behaviours', () => {
+        test('retrieves data from the endpoints file with the correct properties', () => {
+            return request(app)
+                .get('/api')
+                .expect(200).then((response) => {
+                    expect(response.body).toEqual(apiEndpointsJSON)
+                    expect(response.body['GET /api'])
+                        .toEqual
+                        ({ "description": "serves up a json representation of all the available endpoints of the api" })
+                    expect(response.body['GET /api/topics'])
+                        .toEqual
+                        ({
+                            "description": "serves an array of all topics",
+                            "queries": [],
+                            "exampleResponse": {
+                                "topics": [{ "slug": "football", "description": "Footie!" }]
+                            }
+                        })
+                })
+        })
+    })
+})
     
+
+
+
+            
