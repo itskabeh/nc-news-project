@@ -9,6 +9,7 @@
     "test": "jest",
     "test-app": "jest app.test.js",
     "prepare": "husky"
+  
   },
   "repository": {
     "type": "git",
