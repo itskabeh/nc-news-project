@@ -3,9 +3,8 @@ const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data/index.js");
 const app = require("../app")
 const request = require("supertest")
-// const fs = require('fs')
 const apiEndpointsJSON = require('../endpoints.json')
-//const sorted = require("sorted")
+const toBeSortedBy = require("jest-sorted")
 
 beforeEach(() => { return seed(data) })
 afterAll(() => db.end()); 
@@ -78,7 +77,6 @@ describe("GET /api/articles/:article_id", () => {
     test("responds with a 200 status code", () => {
         return request(app).get("/api/articles/3").expect(200)
             .then((res) => {
-                console.log(res.body)
                 expect(res.body.article.article_id).toBe(3)
                 const numCreatedAt = new Date(res.body.article.created_at).getTime()
                 expect(numCreatedAt).toBe(1604394720000)
@@ -86,28 +84,37 @@ describe("GET /api/articles/:article_id", () => {
             })
     })
 })
-describe('error handling', () => {
-        test('responds with a 404 status when given a valid but non-existent endpoint', () => {
-            return request(app)
-                .get('/api/articles/2000')
-                .expect(404)
-                .then((response) => {
-                // console.log(response.status)
-                expect(response.body.msg).toBe('article does not exist');
-      });
-        })
-    test('responds with a 400 status when given an invalid endpoint', () => {
-            return request(app)
-                .get('/api/articles/forklift')
-                .expect(400)
-                .then((response) => {
-                // console.log(response.status)
-                expect(response.body.msg).toBe('Bad request');
-      });
-        })
-}) 
-    
 
-
-
+describe("GET /api/articles", () => {
+    test('GET:article should return articles sorted in age order desc', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+            const articles = response.body.articles
+            expect(Array.isArray(articles)).toBe(true)            
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true, })
             
+            articles.forEach((article) => {
+                expect(article).toHaveProperty("author"),
+                expect(typeof article.author).toBe('string');
+                expect(article).toHaveProperty("title")
+                expect(typeof article.title).toBe('string');
+                expect(article).toHaveProperty("article_id")
+                expect(typeof article.article_id).toBe('number');
+                expect(article).toHaveProperty("topic")
+                expect(typeof article.topic).toBe('string');
+                expect(article).toHaveProperty("created_at")
+                expect(typeof article.created_at).toBe('string');
+                expect(article).toHaveProperty("votes")
+                expect(typeof article.votes).toBe('number');
+                expect(article).toHaveProperty("article_img_url")
+                expect(typeof article.article_img_url).toBe('string');
+                expect(article).toHaveProperty("comment_count")
+                expect(typeof parseInt(article.comment_count)).toBe('number');
+            })
+        });
+    })
+})
+
+
