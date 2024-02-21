@@ -47,8 +47,6 @@ exports.accessComments = (id) => {
     WHERE article_id = $1 
     ORDER BY comments.created_at DESC`, [id])
         .then((response) => {
-            console.log(response.rows, '<<<model')
-            
             return response.rows
         })
 } 

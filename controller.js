@@ -47,7 +47,6 @@ exports.getArticles = (request, response, next) => {
 exports.getCommentsByArticle = (request, response, next) => {
     const { article_id } = request.params;
     accessComments(article_id).then((comments) => {
-        console.log(comments, '<<< controller')
         response.status(200).send( comments )
     
     })
