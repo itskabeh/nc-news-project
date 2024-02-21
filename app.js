@@ -1,15 +1,16 @@
 const express = require('express');
 const app = express();
 
-const { getStatus, getTopics, getAPI, getArticleById, getArticles } = require('./controller');
+const { getStatus, getTopics, getAPI, getArticleById, getArticles, getCommentsByArticle } = require('./controller');
 
 app.use(express.json());
 
 app.get('/api/healthcheck', getStatus);
 app.get('/api/topics', getTopics);
 app.get('/api', getAPI);
-app.get('/api/articles/:article_id', getArticleById) 
-app.get('/api/articles', getArticles)
+app.get('/api/articles/:article_id', getArticleById); 
+app.get('/api/articles', getArticles);
+app.get('/api/articles/:article_id/comments', getCommentsByArticle); 
 
 
 app.use((err, request, response, next) => {
