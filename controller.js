@@ -1,4 +1,4 @@
-const { accessTopics, selectArticleById, accessArticles } = require("./model")
+const { accessTopics, selectArticleById, accessArticles, accessComments } = require("./model")
 const apiCEndpointsJSON = require('./endpoints.json')
 
 
@@ -43,4 +43,17 @@ exports.getArticles = (request, response, next) => {
     })
 
 }; 
+
+exports.getCommentsByArticle = (request, response, next) => {
+    const { article_id } = request.params;
+    accessComments(article_id).then((comments) => {
+        response.status(200).send( comments )
+    
+    })
+        .catch((err) => {
+            next(err)
+        })
+};
+
+
 
