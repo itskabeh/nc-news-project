@@ -1,4 +1,4 @@
-const { accessTopics, selectArticleById, accessArticles, accessComments } = require("./model")
+const { accessTopics, selectArticleById, accessArticles } = require("./model")
 const apiCEndpointsJSON = require('./endpoints.json')
 
 
