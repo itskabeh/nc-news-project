@@ -431,3 +431,39 @@ describe("DELETE /api/comments/:comment_id", () => {
     
     });
 })
+
+
+/// QUESTION 10 getUsers
+
+
+describe("GET /api/users", () => {
+    describe("behaviours", () => {
+        test("responds with 200 status code when accessing users", () => {
+            return request(app)
+                .get("/api/users")
+                .expect(200)
+                .then((response) => {
+                    const users = response.body.users;
+                    expect(users.length).toBe(4);
+                    expect(Array.isArray(users)).toBe(true);
+                    users.forEach((user) => {
+                        expect(user).toHaveProperty("username"),
+                        expect(typeof user.username).toBe("string");
+                        expect(user).toHaveProperty("name");
+                        expect(typeof user.name).toBe("string");
+                        expect(user).toHaveProperty("avatar_url");
+						expect(typeof user.avatar_url).toBe("string");
+                    });
+                });
+        });
+    })
+    describe("error handling", () => {
+			test("responds with a 404 status when given a valid but non-existent endpoint", () => {
+                return request(app)
+                    .get("/api/usersss")
+                    .expect(404);
+            });
+    });
+})
+
+
