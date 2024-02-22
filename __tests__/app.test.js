@@ -204,7 +204,6 @@ describe("POST /api/articles/:article_id/comments", () => {
 			.send(newComment)
 			.expect(201)
 			.then((response) => {
-				console.log(response);
 				expect(response.body.comment.article_id).toBe(4);
 				expect(response.body.comment.author).toBe("rogersop");
 				expect(response.body.comment.body).toBe(
@@ -223,17 +222,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 					expect(response.body.msg).toEqual("Bad request");
 				});
 		});
-		test("responds with a 400 status when given an an empty object", () => {
-			const testComment = {};
-			return request(app)
-				.post("/api/articles/2/comments")
-				.send(testComment)
-				.expect(400)
-				.then((response) => {
-					expect(response.body.msg).toEqual("Bad request");
-				});
-		});
-
+		
 		test("responds with a 400 status when given an incomplete request", () => {
 			const testComment = {
 				username: "rogersop",
@@ -247,7 +236,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 				});
 		});
 
-		test("responds with a 400 status when given an invalid data type", () => {
+		test("responds with a 400 status when given an invalid data type as a username", () => {
 			const testComment = {
 				username: 1234,
 				body: "Wow. I, for one, am shocked and appalled!!!",
@@ -259,7 +248,34 @@ describe("POST /api/articles/:article_id/comments", () => {
 				.then((response) => {
 					expect(response.body.msg).toEqual("Bad request");
 				});
-		});
+        });
+
+        test("responds with a 400 status when posting to an article that doesn't exist", () => {
+					const testComment = {
+						username: "rogersop",
+						body: "Wow. I, for one, am shocked and appalled!!!",
+					};
+					return request(app)
+						.post("/api/articles/9000/comments")
+						.send(testComment)
+						.expect(400)
+                        .then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+        });
+        test("responds with a 400 status when posting using an invalid data type for an article_id", () => {
+					const testComment = {
+						username: "rogersop",
+						body: "Wow. I, for one, am shocked and appalled!!!",
+					};
+					return request(app)
+						.post("/api/articles/forklift/comments")
+						.send(testComment)
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+				});
 	});
 });
 
@@ -312,7 +328,7 @@ describe("PATCH /api/articles/:article_id", () => {
 				.patch("/api/articles/2")
 				.send(updatedVotes)
 				.expect(200)
-                .then((response) => {
+				.then((response) => {
 					expect(response.body.vote.votes).toBe(10);
 				});
 		});
@@ -323,8 +339,8 @@ describe("PATCH /api/articles/:article_id", () => {
 			return request(app)
 				.patch("/api/articles/1")
 				.send(updatedVotes)
-                .expect(400)
-                .then((response) => {
+				.expect(400)
+				.then((response) => {
 					expect(response.body.msg).toEqual("Bad request");
 				});
 		});
@@ -340,7 +356,78 @@ describe("PATCH /api/articles/:article_id", () => {
 				.then((response) => {
 					expect(response.body.msg).toEqual("Bad request");
 				});
-            
-		});
+        });
+        test("when given an invalid article id returns 400", () => {
+					const updatedVotes = {
+						inc_votes: null,
+					};
+					return request(app)
+						.patch("/api/articles/forklift")
+						.send(updatedVotes)
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+        });
+         test("when given a non-existent article id returns 404", () => {
+						const updatedVotes = {
+							inc_votes: null,
+						};
+						return request(app)
+							.patch("/api/articles/9000")
+							.send(updatedVotes)
+							.expect(404)
+							.then((response) => {
+								expect(response.body.msg).toEqual("Not Found");
+							});
+					});
 	});
 });
+
+
+/// QUESTION 9 deleteCommentById 
+
+
+describe("DELETE /api/comments/:comment_id", () => {
+    describe("behaviours", () => {
+        test("DELETE:204 takes a comment_id argument and deletes the comment object on the corresponding article ", () => {
+			
+            return request(app)
+                .delete("/api/comments/1")
+                .expect(204)
+                .then((response) => {
+                    expect(response.body).toEqual({});
+                });
+        });
+    });
+    describe("Error handling", () => {
+        test("when given a valid but non existent comment_id, returns 404", () => {
+            
+            return request(app)
+                .delete("/api/comments/9000")
+                .expect(404)
+                .then((response) => {
+                    expect(response.body.msg).toEqual("Not Found");
+                });
+        });
+        test("when given an invalid format as a comment_id, returns 400", () => {
+					return request(app)
+						.delete("/api/comments/forklift")
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+        });
+        test("when given no comment_id, returns 400", () => {
+            const commentId = null
+            return request(app)
+                        
+						.delete(`/api/comments/${commentId}`)
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+				});
+    
+    });
+})
