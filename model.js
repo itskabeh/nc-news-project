@@ -51,5 +51,26 @@ exports.accessComments = (id) => {
         })
 } 
 
- 
+exports.addComment = ({ article_id, username, body }) => {
+    
+    const newComment = {
+        author: username,
+        body: body
+    }
+
+    if (!article_id || !username || !body) {
+        return Promise.reject({status: 400, msg: 'Bad request'})
+    }
+
+    return db.query(` 
+    INSERT INTO comments 
+    (article_id, author, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;`, [article_id, newComment.author, newComment.body])
+        .then((response) => {
+            return response.rows[0]
+        })
+} 
+
+
  

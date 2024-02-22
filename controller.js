@@ -1,7 +1,9 @@
-const { accessTopics, selectArticleById, accessArticles, accessComments } = require("./model")
+const { accessTopics, selectArticleById, accessArticles, accessComments, addComment } = require("./model")
 const apiCEndpointsJSON = require('./endpoints.json')
 
-
+exports.getHome = (request, response) => {
+    response.sendFile(__dirname + '/test.html')
+}
 
 exports.getStatus = (request, response) => {
     response.status(200).send();
@@ -55,5 +57,16 @@ exports.getCommentsByArticle = (request, response, next) => {
         })
 };
 
+exports.postCommentOnArticle = (request, response, next) => {
+    const { article_id } = request.params;
+    const { username, body } = request.body;
 
+    addComment({ article_id, username, body }).then((comment) => {
+        response.status(201).send({ comment } )
+    
+    })
+        .catch((err) => {
+            next(err)
+        })
+};
 

@@ -2,6 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
@@ -9,6 +10,7 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -26,6 +28,7 @@
       ]
     }
   },
+
   "GET /api/articles/:article_id": {
     "description": "serves data for a specific article when given an article id",
     "queries": [3],
@@ -39,6 +42,29 @@
           "created_at": 1604394720000,
           "article_img_url":
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
+     "description": "serves data for all comments on an article given the article id",
+    "queries": [9],
+    "exampleResponse": {
+      "articles": [
+        {
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "votes": 16,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "created_at": 1586179020000
+  },
+        {
+          "body": "The owls are not what they seem.",
+          "votes": 20,
+          "author": "icellusedkars",
+          "article_id": 9,
+          "created_at": 1584205320000
         }
       ]
     }

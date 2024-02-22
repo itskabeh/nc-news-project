@@ -184,17 +184,97 @@ describe("GET '/api/articles/:article_id/comments'", () => {
             return request(app)
                 .get('/api/articles/forklift/comments')
                 .expect(400)
+                .then((response) => {
+                    expect(response.body.msg).toEqual('Bad request')
+                })
+            
         })
-    })
-     describe('error handling', () => {
+
         test('responds with a 404 status when given a valid but non-existent endpoint', () => {
             return request(app)
-                .get('/api/articles/forklift/comment')
+                .get('/api/articles/1/comment')
                 .expect(404)
         })
     })
 })
-    
-    
 
-  
+
+//// question 7 postCommentOnArticle
+
+describe("POST /api/articles/:article_id/comments", () => {
+    test('POST:201 inserts a new comment to the db and sends the updated comments back to the client', () => {
+        const newComment = {
+            "username": 'rogersop',
+            "body": 'Wow. I, for one, am shocked and appalled!!!'
+        };
+        return request(app)
+            .post('/api/articles/4/comments')
+            .send(newComment)
+            .expect(201)
+            .then((response) => {
+                console.log(response)
+                expect(response.body.comment.article_id).toBe(4);
+                expect(response.body.comment.author).toBe("rogersop");
+                expect(response.body.comment.body).toBe('Wow. I, for one, am shocked and appalled!!!');
+            });
+    });
+    describe('error handling', () => {
+        test('responds with a 400 status when given an an empty object', () => {
+                const testComment = {}
+                return request(app)
+                    .post('/api/articles/2/comments')
+                    .send(testComment)
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual('Bad request')
+                    })
+            
+        })
+        test('responds with a 400 status when given an an empty object', () => {
+                const testComment = {}
+                return request(app)
+                    .post('/api/articles/2/comments')
+                    .send(testComment)
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual('Bad request')
+                    })
+            
+        })
+        
+
+         test('responds with a 400 status when given an incomplete request', () => {
+             const testComment = {
+                    "username": 'rogersop'
+                 }
+                return request(app)
+                    .post('/api/articles/3/comments')
+                    .send(testComment)
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual('Bad request')
+                    })
+         })
+        
+        test('responds with a 400 status when given an invalid data type', () => {
+            const testComment = {
+                "username": 1234,
+                "body": 'Wow. I, for one, am shocked and appalled!!!'
+            };
+                return request(app)
+                    .post('/api/articles/3/comments')
+                    .send(testComment)
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual('Bad request')
+                    })
+        })
+        
+    })
+    
+})
+
+
+
+
+
