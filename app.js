@@ -12,7 +12,8 @@ const {
 	getCommentsByArticle,
 	postCommentOnArticle,
 	patchArticleVotes,
-	deleteCommentById,
+    deleteCommentById,
+    getUsers,
 } = require("./controller");
 
 app.use(express.json());
@@ -26,6 +27,7 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 app.post("/api/articles/:article_id/comments", postCommentOnArticle);
 app.patch("/api/articles/:article_id", patchArticleVotes);
 app.delete("/api/comments/:comment_id", deleteCommentById);
+app.get("/api/users", getUsers)
 
 app.use((err, request, response, next) => {
 	console.log("err in error handling in middleware", err);

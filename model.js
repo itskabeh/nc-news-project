@@ -143,3 +143,22 @@ exports.selectComment = (comment_id) => {
 		}
 	});
 };
+
+exports.accessUsers = () => {
+
+    return db.query("SELECT * FROM users;")
+        .then((response) => {
+            return response.rows;
+        });
+}
+
+
+
+    
+    
+    
+
+
+
+ 
+    

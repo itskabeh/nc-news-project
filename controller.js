@@ -7,7 +7,8 @@ const {
 	accessComments,
 	addComment,
 	updateVotes,
-	selectComment,
+    selectComment,
+    accessUsers
 } = require("./model");
 const apiCEndpointsJSON = require("./endpoints.json");
 
@@ -97,3 +98,14 @@ exports.deleteCommentById = (request, response, next) => {
 			next(err);
 		});
 };
+
+exports.getUsers = (request, response, next) => {
+	accessUsers()
+		.then((users) => {
+			response.status(200).send({ users });
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
+
