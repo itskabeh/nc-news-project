@@ -1,4 +1,4 @@
-const { accessTopics, selectArticleById, accessArticles, accessComments, addComment } = require("./model")
+const { accessTopics, selectArticleById, accessArticles, accessComments, addComment, updateVotes  } = require("./model")
 const apiCEndpointsJSON = require('./endpoints.json')
 
 exports.getHome = (request, response) => {
@@ -70,3 +70,15 @@ exports.postCommentOnArticle = (request, response, next) => {
         })
 };
 
+
+
+exports.patchArticleVotes = (request, response, next) => {
+    const { article_id } = request.params;
+    const newVote = request.body.inc_votes;
+    updateVotes( article_id, newVote ).then((vote) => {
+        response.status(200).send({ vote })
+    })
+        .catch((err) => {
+            next(err)
+        })
+} 

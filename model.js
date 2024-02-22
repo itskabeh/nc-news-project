@@ -73,4 +73,24 @@ exports.addComment = ({ article_id, username, body }) => {
 } 
 
 
+
+exports.updateVotes = ( article_id, newVote ) => {
+   
+    const updatedVotes = {
+        inc_votes: newVote
+    }
+
+    return db.query(` 
+    UPDATE articles 
+    SET votes = votes + $1  
+    WHERE article_id = $2
+    RETURNING *`, [updatedVotes.inc_votes, article_id])
+        .then((response) => {
+            console.log(response.rows[0], "<<< model")
+    
+            return response.rows[0]
+        })
+} 
+
+ 
  
