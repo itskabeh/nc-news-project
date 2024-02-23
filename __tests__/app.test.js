@@ -29,21 +29,18 @@ describe("GET /api/topics", () => {
 				.get("/api/topics")
 				.expect(200)
 				.then((response) => {
-					const topics = response.body.topics;
+                    const topics = response.body.topics;
+                    
 					expect(topics.length).toBe(3);
-					expect(Array.isArray(topics)).toBe(true);
+                    expect(Array.isArray(topics)).toBe(true);
+                    
 					topics.forEach((topic) => {
 						expect(topic).toHaveProperty("slug"),
-							expect(typeof topic.slug).toBe("string");
+						expect(typeof topic.slug).toBe("string");
 						expect(topic).toHaveProperty("description");
 						expect(typeof topic.description).toBe("string");
 					});
 				});
-		});
-	});
-	describe("error handling", () => {
-		test("responds with a 404 status when given a valid but non-existent endpoint", () => {
-			return request(app).get("/api/topicssss").expect(404);
 		});
 	});
 });
@@ -77,38 +74,52 @@ describe("GET /api", () => {
 //// question 4 getArticleById
 
 describe("GET /api/articles/:article_id", () => {
-	test("responds with a 200 status code", () => {
-		return request(app)
-			.get("/api/articles/3")
-			.expect(200)
-			.then((res) => {
-				expect(res.body.article.article_id).toBe(3);
-				const numCreatedAt = new Date(res.body.article.created_at).getTime();
-				expect(numCreatedAt).toBe(1604394720000);
-				expect(res.body.article.article_img_url).toEqual(
-					"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-				);
+    describe("behaviours", () => {
+			test("when given an article id, responds with corresponding article object", () => {
+				return request(app)
+					.get("/api/articles/3")
+					.expect(200)
+					.then((response) => {
+                        const article = response.body.article;
+                        
+						expect(article.article_id).toBe(3);
+						const numCreatedAt = new Date(article.created_at).getTime();
+						expect(numCreatedAt).toBe(1604394720000);
+						expect(article.article_img_url).toEqual(
+							"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+						);
+                    });
+            });
+    });
+    describe("error handling", () => {
+			test("responds with a 404 status when given a valid but non-existent article_id", () => {
+				return request(app).get("/api/articles/9000").expect(404);
 			});
-	});
+
+			test("responds with a 400 status when given an invalid article id", () => {
+				return request(app).get("/api/articles/forklift").expect(400);
+			});
+		});
 });
 
-//// question 5 getArticles and question 11 get articles by topic
+//// question 5 getArticles
 
 describe("GET /api/articles", () => {
 	describe("behaviours", () => {
-		test("GET:article should return all articles and they should be sorted in age order desc", () => {
+		test("GET:article should return all articles and they should have a comment count property and be sorted in age order desc", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
 				.then((response) => {
-					const articles = response.body.articles;
+                    const articles = response.body.articles;
+                    
 					expect(Array.isArray(articles)).toBe(true);
 					expect(articles).toBeSortedBy("created_at", { descending: true });
 
 					articles.forEach((article) => {
 						expect(article).not.toHaveProperty("body");
-						expect(article).toHaveProperty("author"),
-							expect(typeof article.author).toBe("string");
+                        expect(article).toHaveProperty("author");
+                        expect(typeof article.author).toBe("string");
 						expect(article).toHaveProperty("title");
 						expect(typeof article.title).toBe("string");
 						expect(article).toHaveProperty("article_id");
@@ -132,88 +143,92 @@ describe("GET /api/articles", () => {
 			return request(app).get("/api/article").expect(404);
 		});
 	});
-    
 });
-
 
 //// question 6 getCommentsByArticle
 
 describe("GET '/api/articles/:article_id/comments'", () => {
-	test("GET:commentsByArticleId should return comments associated with the passed article sorted by most recent first", () => {
-		return request(app)
-			.get("/api/articles/1/comments")
-			.expect(200)
-			.then((response) => {
-				const comments = response.body;
+    describe("behaviours", () => {
+        test("GET:commentsByArticleId should return comments associated with the passed article sorted by most recent first", () => {
+            return request(app)
+                .get("/api/articles/1/comments")
+                .expect(200)
+                .then((response) => {
+                    const comments = response.body;
 
-				expect(Array.isArray(comments)).toBe(true);
-				expect(comments).toBeSortedBy("created_at", { descending: true });
-				expect(comments.length).toBe(11);
+                    expect(Array.isArray(comments)).toBe(true);
+                    expect(comments).toBeSortedBy("created_at", { descending: true });
+                    expect(comments.length).toBe(11);
 
-				comments.forEach((comment) => {
-					expect(comment).toHaveProperty("comment_id");
-					expect(typeof comment.comment_id).toBe("number");
-					expect(comment).toHaveProperty("votes");
-					expect(typeof comment.votes).toBe("number");
-					expect(comment).toHaveProperty("created_at");
-					expect(typeof comment.created_at).toBe("string");
-					expect(comment).toHaveProperty("author");
-					expect(typeof comment.author).toBe("string");
-					expect(comment).toHaveProperty("body");
-					expect(typeof comment.body).toBe("string");
-					expect(comment).toHaveProperty("article_id");
-					expect(typeof comment.article_id).toBe("number");
-				});
-			});
-	});
+                    comments.forEach((comment) => {
+                        expect(comment).toHaveProperty("comment_id");
+                        expect(typeof comment.comment_id).toBe("number");
+                        expect(comment).toHaveProperty("votes");
+                        expect(typeof comment.votes).toBe("number");
+                        expect(comment).toHaveProperty("created_at");
+                        expect(typeof comment.created_at).toBe("string");
+                        expect(comment).toHaveProperty("author");
+                        expect(typeof comment.author).toBe("string");
+                        expect(comment).toHaveProperty("body");
+                        expect(typeof comment.body).toBe("string");
+                        expect(comment).toHaveProperty("article_id");
+                        expect(typeof comment.article_id).toBe("number");
+                    });
+                });
+        });
 
-	describe("edge cases", () => {
-		test("responds with an empty array if there are no comments for the specified article", () => {
-			return request(app)
-				.get("/api/articles/7/comments")
-				.expect(200)
-				.then((response) => {
-					const comments = response.body;
-					expect(comments).toEqual([]);
-				});
-		});
-	});
-	describe("error handling", () => {
-		test("responds with a 400 status when given an invalid endpoint", () => {
-			return request(app)
-				.get("/api/articles/forklift/comments")
-				.expect(400)
-				.then((response) => {
-					expect(response.body.msg).toEqual("Bad request");
-				});
-		});
+        test("responds with an empty array if there are no comments for the specified article", () => {
+            return request(app)
+                .get("/api/articles/7/comments")
+                .expect(200)
+                .then((response) => {
+                    const comments = response.body;
+                    expect(comments).toEqual([]);
+                });
+        });
+    })
 
-		test("responds with a 404 status when given a valid but non-existent endpoint", () => {
-			return request(app).get("/api/articles/1/comment").expect(404);
-		});
-	});
-});
+        describe("error handling", () => {
+            test("responds with a 400 status when given an invalid endpoint", () => {
+                return request(app)
+                    .get("/api/articles/forklift/comments")
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual("Bad request");
+                    });
+            });
+
+            test("responds with a 404 status when given a valid but non-existent endpoint", () => {
+                return request(app).get("/api/articles/1/comment").expect(404);
+            });
+        });
+    });
+
 
 //// question 7 postCommentOnArticle
 
 describe("POST /api/articles/:article_id/comments", () => {
-	test("POST:201 inserts a new comment to the db and sends the updated comments back to the client", () => {
-		const newComment = {
-			username: "rogersop",
-			body: "Wow. I, for one, am shocked and appalled!!!",
-		};
-		return request(app)
-			.post("/api/articles/4/comments")
-			.send(newComment)
-			.expect(201)
-			.then((response) => {
-				expect(response.body.comment.article_id).toBe(4);
-				expect(response.body.comment.author).toBe("rogersop");
-				expect(response.body.comment.body).toBe(
-					"Wow. I, for one, am shocked and appalled!!!"
-				);
-			});
-	});
+    describe("behaviours", () => {
+        test("POST:201 inserts a new comment to the db and sends the updated comments back to the client", () => {
+            const newComment = {
+                username: "rogersop",
+                body: "Wow. I, for one, am shocked and appalled!!!",
+            };
+            return request(app)
+                .post("/api/articles/4/comments")
+                .send(newComment)
+                .expect(201)
+                .then((response) => {
+                    const article = response.body.comment;
+
+                    expect(article.article_id).toBe(4);
+                    expect(article.author).toBe("rogersop");
+                    expect(article.body).toBe(
+                        "Wow. I, for one, am shocked and appalled!!!"
+                    );
+                });
+        });
+    })
 	describe("error handling", () => {
 		test("responds with a 400 status when given an an empty object", () => {
 			const testComment = {};
@@ -253,7 +268,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 				});
 		});
 
-		test("responds with a 400 status when posting to an article that doesn't exist", () => {
+		test("responds with a 404 status when posting to an article that doesn't exist", () => {
 			const testComment = {
 				username: "rogersop",
 				body: "Wow. I, for one, am shocked and appalled!!!",
@@ -261,9 +276,9 @@ describe("POST /api/articles/:article_id/comments", () => {
 			return request(app)
 				.post("/api/articles/9000/comments")
 				.send(testComment)
-				.expect(400)
+				.expect(404)
 				.then((response) => {
-					expect(response.body.msg).toEqual("Bad request");
+					expect(response.body.msg).toEqual("Article does not exist");
 				});
 		});
 		test("responds with a 400 status when posting using an invalid data type for an article_id", () => {
@@ -438,12 +453,14 @@ describe("GET /api/users", () => {
 				.get("/api/users")
 				.expect(200)
 				.then((response) => {
-					const users = response.body.users;
+                    const users = response.body.users;
+                    
 					expect(users.length).toBe(4);
-					expect(Array.isArray(users)).toBe(true);
+                    expect(Array.isArray(users)).toBe(true);
+                    
 					users.forEach((user) => {
-						expect(user).toHaveProperty("username"),
-							expect(typeof user.username).toBe("string");
+                        expect(user).toHaveProperty("username");
+                        expect(typeof user.username).toBe("string");
 						expect(user).toHaveProperty("name");
 						expect(typeof user.name).toBe("string");
 						expect(user).toHaveProperty("avatar_url");
@@ -452,34 +469,88 @@ describe("GET /api/users", () => {
 				});
 		});
 	});
-	describe("error handling", () => {
-		test("responds with a 404 status when given a valid but non-existent endpoint", () => {
-			return request(app).get("/api/usersss").expect(404);
-		});
-	});
 });
 
+//// QUESTION 11 GetArticles by topic
 
 describe("GET /api/articles (topic query)", () => {
-	test("GET: should return articles filtered by topic if given a topic query", () => {
-		// const topic = "mitch";
-		return request(app)
-			.get("/api/articles?topic=mitch")
-			.expect(200)
-			.then((response) => {
-                const articles = response.body.articles;
-                console.log(articles)
-				expect(Array.isArray(articles)).toBe(true);
-				expect(articles).toBeSortedBy("created_at", { descending: true });
-				expect(articles.length).toBe(12);
-				articles.forEach((article) => {
-					expect(article.topic).toEqual("mitch");
+    describe("behaviours", () => {
+        test("GET: should return articles filtered by topic if given a topic query", () => {
+            return request(app)
+                .get("/api/articles?topic=mitch")
+                .expect(200)
+                .then((response) => {
+                    const articles = response.body.articles;
+                  
+                    expect(Array.isArray(articles)).toBe(true);
+                    expect(articles).toBeSortedBy("created_at", { descending: true });
+                    expect(articles.length).toBe(12);
+                    articles.forEach((article) => {
+                        expect(article.topic).toEqual("mitch");
+                    });
+                });
+        });
+    });
+
+    describe("error handling", () => {
+        test("responds with a 404 status when given a valid but non-existent query", () => {
+            return request(app).get("/api/articles?topic=witch").expect(404);
+        });
+    });
+})
+
+//// QUESTION 12 GET comment_count by article_id
+
+describe("GET /api/articles/article_id (comment_count)", () => {
+	describe("behaviours", () => {
+		test("GET: should return articles with comment count if accessing through a single comment via its id", () => {
+			return request(app)
+				.get("/api/articles/9")
+				.expect(200)
+				.then((response) => {
+                    const article = response.body.article;
+                    
+					expect(article.article_id).toBe(9);
+					expect(article.comment_count).toBe(2);
+
+					expect(article).toHaveProperty("author");
+					expect(typeof article.author).toBe("string");
+					expect(article).toHaveProperty("title");
+					expect(typeof article.title).toBe("string");
+					expect(article).toHaveProperty("body");
+					expect(typeof article.body).toBe("string");
+					expect(article).toHaveProperty("article_id");
+					expect(typeof article.article_id).toBe("number");
+					expect(article).toHaveProperty("topic");
+					expect(typeof article.topic).toBe("string");
+					expect(article).toHaveProperty("created_at");
+					expect(typeof article.created_at).toBe("string");
+					expect(article).toHaveProperty("votes");
+					expect(typeof article.votes).toBe("number");
+					expect(article).toHaveProperty("article_img_url");
+					expect(typeof article.article_img_url).toBe("string");
+					expect(article).toHaveProperty("comment_count");
+					expect(typeof article.comment_count).toBe("number");
 				});
-			});
+		});
+		test("responds an article with a comment_count property when article does not have any comments yet", () => {
+			return request(app)
+				.get("/api/articles/2")
+				.expect(200)
+				.then((response) => {
+					const article = response.body.article;
+					expect(article.comment_count).toBe(0);
+				});
+		});
 	});
-});
-describe("error handling", () => {
-	test("responds with a 404 status when given a valid but non-existent query", () => {
-		return request(app).get("/api/article?topic=witch").expect(404);
+
+	describe("error handling", () => {
+		test("responds with a 404 status when given a valid but non-existent article_id", () => {
+			return request(app).get("/api/articles/9000").expect(404);
+		});
+
+		test("responds with a 400 status when given an invalid article id", () => {
+			return request(app).get("/api/articles/forklift").expect(400);
+		});
 	});
 });
