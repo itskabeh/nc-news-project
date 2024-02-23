@@ -1,5 +1,3 @@
-/** @format */
-
 const {
 	accessTopics,
 	selectArticleById,

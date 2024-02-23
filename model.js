@@ -1,5 +1,3 @@
-/** @format */
-
 const db = require("./db/connection.js");
 
 exports.accessTopics = () => {
