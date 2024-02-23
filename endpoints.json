@@ -127,147 +127,57 @@
 					"username": "icellusedkars",
 					"name": "sam",
 					"avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
-				},
-				{
-					"username": "rogersop",
-					"name": "paul",
-					"avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
-				},
-				{
-					"username": "lurker",
-					"name": "do_nothing",
-					"avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
 				}
 			]
 		}
 	},
 
-"GET /api/articles (topic query)": {
-		"description": "serves an array of all articles that are on a specified topic",
-		"queries": ["topic"],
-		"exampleResponse": {
-			"articles":  [
-				{
-					"article_id": 3,
-					"author": "icellusedkars",
-					"title": "Eight pug gifs that remind me of mitch",
-					"topic": "mitch",
-					"created_at": "2020-11-03T09:12:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 2
-				},
-				{
-					"article_id": 6,
-					"author": "icellusedkars",
-					"title": "A",
-					"topic": "mitch",
-					"created_at": "2020-10-18T01:00:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 1
-				},
-				{
-					"article_id": 2,
-					"author": "icellusedkars",
-					"title": "Sony Vaio; or, The Laptop",
-					"topic": "mitch",
-					"created_at": "2020-10-16T05:03:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 12,
-					"author": "butter_bridge",
-					"title": "Moustache",
-					"topic": "mitch",
-					"created_at": "2020-10-11T11:24:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 13,
-					"author": "butter_bridge",
-					"title": "Another article about Mitch",
-					"topic": "mitch",
-					"created_at": "2020-10-11T11:24:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 1,
-					"author": "butter_bridge",
-					"title": "Living in the shadow of a great man",
-					"topic": "mitch",
-					"created_at": "2020-07-09T20:11:00.000Z",
-					"votes": 100,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 11
-				},
-				{
-					"article_id": 9,
-					"author": "butter_bridge",
-					"title": "They're not exactly dogs, are they?",
-					"topic": "mitch",
-					"created_at": "2020-06-06T09:10:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 2
-				},
-				{
-					"article_id": 10,
-					"author": "rogersop",
-					"title": "Seven inspirational thought leaders from Manchester UK",
-					"topic": "mitch",
-					"created_at": "2020-05-14T04:15:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 4,
-					"author": "rogersop",
-					"title": "Student SUES Mitch!",
-					"topic": "mitch",
-					"created_at": "2020-05-06T01:14:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 8,
-					"author": "icellusedkars",
-					"title": "Does Mitch predate civilisation?",
-					"topic": "mitch",
-					"created_at": "2020-04-17T01:08:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 11,
-					"author": "icellusedkars",
-					"title": "Am I a cat?",
-					"topic": "mitch",
-					"created_at": "2020-01-15T22:21:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				},
-				{
-					"article_id": 7,
-					"author": "icellusedkars",
-					"title": "Z",
-					"topic": "mitch",
-					"created_at": "2020-01-07T14:08:00.000Z",
-					"votes": 0,
-					"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-					"comment_count": 0
-				}
-			]
-		}
-  }
+  "GET /api/articles (topic query)": {
+      "description": "serves an array of all articles that are on a specified topic",
+      "queries": ["topic"],
+      "exampleResponse": {
+        "articles":  [
+          {
+            "article_id": 3,
+            "author": "icellusedkars",
+            "title": "Eight pug gifs that remind me of mitch",
+            "topic": "mitch",
+            "created_at": "2020-11-03T09:12:00.000Z",
+            "votes": 0,
+            "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            "comment_count": 2
+          },
+          {
+            "article_id": 6,
+            "author": "icellusedkars",
+            "title": "A",
+            "topic": "mitch",
+            "created_at": "2020-10-18T01:00:00.000Z",
+            "votes": 0,
+            "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            "comment_count": 1
+          }
+        ]
+      }
+    },
+
+    "GET /api/articles/:article_id (comment_count)": {
+      "description": "serves data for a specific article when given an article id with a comment count property included",
+      "queries": [9],
+      "exampleResponse": {
+        "articles": [
+          {
+            "article_id": 9,
+            "title": "They're not exactly dogs, are they?",
+            "topic": "mitch",
+            "author": "butter_bridge",
+            "body": "Well? Think about it.",
+            "created_at": "2020-06-06T09:10:00.000Z",
+            "votes": 0,
+            "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            "comment_count": 2
+          }
+        ]
+      }
+    }
 	}
