@@ -20,10 +20,9 @@ exports.selectArticleById = (id) => {
 		});
 };
 
-exports.accessArticles = () => {
-	return db
-		.query(
-			`
+exports.accessArticles = (topic) => {
+
+    let queryStr = `
     SELECT
         articles.article_id,
         articles.author,
@@ -34,14 +33,30 @@ exports.accessArticles = () => {
         articles.article_img_url,
         CAST(COUNT(comments.body) AS INTEGER) AS comment_count
     FROM articles
-    JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC`
-		)
-		.then((response) => {
-			return response.rows;
-		});
-};
+    LEFT JOIN comments ON articles.article_id = comments.article_id`;
+    
+    
+    let queryValues = []
+    if (topic) {
+        queryStr += ' WHERE articles.topic = $1';
+        queryValues.push(topic);
+    }
+
+    queryStr += ' GROUP BY articles.article_id ORDER BY articles.created_at DESC'
+
+    return db
+        .query(queryStr, queryValues)
+        .then((response) => {
+            if (response.rowCount === 0) {
+            return Promise.reject({ status: 404, msg: "Not Found" });
+
+        }
+            return response.rows;
+        });
+
+}
+    
+
 
 exports.accessComments = (id) => {
 	return db
@@ -154,7 +169,6 @@ exports.accessUsers = () => {
 
 
 
-    
     
     
 

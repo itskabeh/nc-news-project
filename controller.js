@@ -43,13 +43,15 @@ exports.getArticleById = (request, response, next) => {
 };
 
 exports.getArticles = (request, response, next) => {
-	accessArticles()
-		.then((articles) => {
+    const { topic } = request.query;
+    accessArticles(topic)
+        .then((articles) => {
 			response.status(200).send({ articles });
 		})
 		.catch((err) => {
 			next(err);
-		});
+        });
+    	
 };
 
 exports.getCommentsByArticle = (request, response, next) => {
@@ -108,4 +110,5 @@ exports.getUsers = (request, response, next) => {
 			next(err);
 		});
 };
+
 
