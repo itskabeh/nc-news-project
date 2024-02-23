@@ -13,7 +13,7 @@ const {
 	postCommentOnArticle,
 	patchArticleVotes,
     deleteCommentById,
-    getUsers,
+    getUsers
 } = require("./controller");
 
 app.use(express.json());
@@ -29,18 +29,20 @@ app.patch("/api/articles/:article_id", patchArticleVotes);
 app.delete("/api/comments/:comment_id", deleteCommentById);
 app.get("/api/users", getUsers)
 
+
 app.use((err, request, response, next) => {
 	console.log("err in error handling in middleware", err);
 
-	if (err.status && err.msg) {
-		response.status(err.status).send({ msg: err.msg });
-	} else if (
-		err.code === "22P02" ||
-		err.code === "23503" ||
-		err.code === "23502"
-	) {
-		response.status(400).send({ msg: "Bad request" });
-	}
+    if (err.status && err.msg) {
+        response.status(err.status).send({ msg: err.msg });
+    } else if (
+        err.code === "22P02" ||
+        err.code === "23503" ||
+        err.code === "23502"
+    ) {
+        response.status(400).send({ msg: "Bad request" });
+    
+    } 
 });
 
 module.exports = app;
