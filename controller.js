@@ -41,8 +41,8 @@ exports.getArticleById = (request, response, next) => {
 };
 
 exports.getArticles = (request, response, next) => {
-    const { topic } = request.query;
-    accessArticles(topic)
+    const { topic, sort_by, order } = request.query;
+    accessArticles(topic, sort_by, order)
         .then((articles) => {
 			response.status(200).send({ articles });
 		})

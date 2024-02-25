@@ -1,10 +1,13 @@
 const db = require("./db/connection.js");
 
+
 exports.accessTopics = () => {
 	return db.query("SELECT * FROM topics;").then((response) => {
 		return response.rows;
 	});
 };
+
+
 
 exports.selectArticleById = (id) => {
 	return db
@@ -29,7 +32,20 @@ exports.selectArticleById = (id) => {
 };
 
 
-exports.accessArticles = (topic) => {
+
+exports.accessArticles = (topic, sort_by = "created_at", order = "desc") => {
+
+
+    const validSortBys = ['author', 'title', 'topic', 'created_at', 'votes', 'comment_count']
+    const validOrders = ['asc', 'desc']
+
+    if (!validSortBys.includes(sort_by)) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+    }
+
+    if (!validOrders.includes(order)) {
+			return Promise.reject({ status: 400, msg: "Bad request" });
+		}
 
     let queryStr = `
     SELECT
@@ -51,7 +67,15 @@ exports.accessArticles = (topic) => {
         queryValues.push(topic);
     }
 
-    queryStr += ' GROUP BY articles.article_id ORDER BY articles.created_at DESC'
+    queryStr += ' GROUP BY articles.article_id'
+
+		if (sort_by) {
+			queryStr += ` ORDER BY articles.${sort_by}`;
+        }
+    
+    if (order) {
+			queryStr += ` ${order}`;
+		}
 
     return db
         .query(queryStr, queryValues)
@@ -81,6 +105,8 @@ exports.accessComments = (id) => {
 			return response.rows;
 		});
 };
+
+
 
 exports.addComment = ({ article_id, username, body }) => {
 
@@ -115,6 +141,8 @@ exports.addComment = ({ article_id, username, body }) => {
         })
 };
 
+
+
 exports.updateVotes = (article_id, newVote) => {
 	const updatedVotes = {
 		inc_votes: newVote,
@@ -148,6 +176,8 @@ exports.updateVotes = (article_id, newVote) => {
 	});
 };
 
+
+
 exports.selectComment = (comment_id) => {
 	return Promise.resolve(
 		db.query(
@@ -176,6 +206,8 @@ exports.selectComment = (comment_id) => {
 		}
 	});
 };
+
+
 
 exports.accessUsers = () => {
 
