@@ -79,7 +79,7 @@ To test the functionality of the code, run the following command:
 
 
 
-#### Endpoints
+## Endpoints
 
 Retrieve a list of all available endpoints.
 
@@ -135,14 +135,14 @@ For more information, refer to the endpoints.json file.
 
 
 
-##### Minimum Requirements
+## Minimum Requirements
 
     node.js: ">=v21.3.0"
     postgres: ">=14.10"
 
 
 
-###### List of Dependencies
+## List of Dependencies
 
 Production Dependencies:
 
