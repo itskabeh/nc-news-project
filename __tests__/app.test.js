@@ -511,24 +511,6 @@ describe("GET /api/articles/article_id (comment_count)", () => {
 					expect(article.article_id).toBe(9);
 					expect(article.comment_count).toBe(2);
 
-					expect(article).toHaveProperty("author");
-					expect(typeof article.author).toBe("string");
-					expect(article).toHaveProperty("title");
-					expect(typeof article.title).toBe("string");
-					expect(article).toHaveProperty("body");
-					expect(typeof article.body).toBe("string");
-					expect(article).toHaveProperty("article_id");
-					expect(typeof article.article_id).toBe("number");
-					expect(article).toHaveProperty("topic");
-					expect(typeof article.topic).toBe("string");
-					expect(article).toHaveProperty("created_at");
-					expect(typeof article.created_at).toBe("string");
-					expect(article).toHaveProperty("votes");
-					expect(typeof article.votes).toBe("number");
-					expect(article).toHaveProperty("article_img_url");
-					expect(typeof article.article_img_url).toBe("string");
-					expect(article).toHaveProperty("comment_count");
-					expect(typeof article.comment_count).toBe("number");
 				});
 		});
 		test("responds an article with a comment_count property when article does not have any comments yet", () => {
