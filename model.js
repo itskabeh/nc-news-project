@@ -278,3 +278,115 @@ exports.updateCommentVotes = (comment_id, newVote) => {
 		}
 	});
 };
+
+
+exports.addArticle = ({
+    author,
+    title,
+    body,
+    topic,
+    article_img_url = "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+}) => {
+
+    if (
+			!author ||
+			!title ||
+			!body ||
+			!topic ||
+			typeof author !== "string" ||
+			typeof title !== "string" ||
+			typeof body !== "string" ||
+			typeof topic !== "string" ||
+			typeof article_img_url !== "string"
+		) {
+			return Promise.reject({ status: 400, msg: "Bad request" });
+		}
+    
+    return new Promise((resolve, reject) => {
+    
+        db.query("SELECT * FROM users WHERE username = $1;", [author])
+            .then(({ rows }) => {
+                if (rows.length === 0) {
+                    return Promise.reject({ status: 404, msg: "You must register an account to post an article" });
+                }
+                return db.query('SELECT * FROM topics WHERE slug = $1;', [topic])
+            })
+            .then(({ rows }) => {
+                if (rows.length === 0) {
+                    return Promise.reject({ status: 404, msg: "Not a valid topic" });
+                }
+
+                return db
+                    .query(
+                        ` 
+    INSERT INTO articles 
+    (author, title, body, topic, article_img_url)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *;`,
+                        [
+                            author,
+                            title,
+                            body,
+                            topic,
+                            article_img_url,
+                        ]
+                    )
+            })
+            .then(response => {
+		
+                const newArticle = response.rows[0];
+
+                return db.query(
+                    `
+	SELECT articles.*,
+	CAST(COUNT(comments.body) AS INTEGER) AS comment_count
+	FROM articles
+	LEFT JOIN comments ON articles.article_id = comments.article_id
+	WHERE articles.article_id = $1
+    GROUP BY articles.article_id;
+	`, [newArticle.article_id]
+                );
+
+            })
+            .then((response) => {
+                resolve(response.rows[0]);
+            })
+            .catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+
+// exports.addComment = ({ article_id, username, body }) => {
+// 	return db
+// 		.query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+// 		.then(({ rows }) => {
+// 			if (rows.length === 0) {
+// 				return Promise.reject({ status: 404, msg: "Article does not exist" });
+// 			}
+
+// 			const newComment = {
+// 				author: username,
+// 				body: body,
+// 			};
+
+// 			if (!article_id || !username || !body) {
+// 				return Promise.reject({ status: 400, msg: "Bad request" });
+// 			}
+
+// 			return db
+// 				.query(
+// 					` 
+//     INSERT INTO comments 
+//     (article_id, author, body)
+//     VALUES ($1, $2, $3)
+//     RETURNING *;`,
+// 					[article_id, newComment.author, newComment.body]
+// 				)
+// 				.then((response) => {
+// 					return response.rows[0];
+// 				});
+// 		});
+// };
