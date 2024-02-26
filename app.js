@@ -1,31 +1,11 @@
 const express = require("express");
 const app = express();
 
-const {
-	getStatus,
-	getTopics,
-	getAPI,
-	getArticleById,
-	getArticles,
-	getCommentsByArticle,
-	postCommentOnArticle,
-	patchArticleVotes,
-    deleteCommentById,
-    getUsers
-} = require("./controller");
-
 app.use(express.json());
 
-app.get("/api/healthcheck", getStatus);
-app.get("/api", getAPI);
-app.get("/api/topics", getTopics);
-app.get("/api/articles", getArticles);
-app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles/:article_id/comments", getCommentsByArticle);
-app.post("/api/articles/:article_id/comments", postCommentOnArticle);
-app.patch("/api/articles/:article_id", patchArticleVotes);
-app.delete("/api/comments/:comment_id", deleteCommentById);
-app.get("/api/users", getUsers)
+const apiRouter = require("./routes/api-router");
+
+app.use("/api", apiRouter);
 
 
 app.use((err, request, response, next) => {
