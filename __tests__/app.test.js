@@ -772,3 +772,138 @@ describe("PATCH /api/comments/:comment_id", () => {
 				});
 	});
 });
+
+
+//// question 19 postNewArticle
+
+describe("POST /api/articles", () => {
+	describe("behaviours", () => {
+		test("POST:201 inserts a new article to the db and sends the updated article back to the client, the image url will set to default", () => {
+			const newArticle = {
+				author: "rogersop",
+				title: "Mitch is at it again!",
+				body: "In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask.",
+				topic: "mitch",
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(newArticle)
+				.expect(201)
+				.then((response) => {
+                    const article = response.body.article;
+                    console.log(article, "<<< article in test")
+
+                    expect(article.article_id).toBe(14);
+                    expect(article.title).toEqual("Mitch is at it again!");
+                    expect(article.topic).toEqual("mitch");
+                    expect(article.author).toEqual("rogersop");
+					expect(article.body).toEqual(
+						"In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask."
+					);
+                    expect(article).toHaveProperty("created_at");
+                    expect(article.votes).toBe(0);
+					expect(article.article_img_url).toBe(
+						"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+					);
+					expect(article.comment_count).toBe(0);
+                    
+				});
+        });
+        
+    });
+    
+	describe("error handling", () => {
+		test("responds with a 400 status when given an an empty object", () => {
+			const testArticle = {};
+			return request(app)
+				.post("/api/articles")
+				.send(testArticle)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+
+		test("responds with a 400 status when given an incomplete request", () => {
+			const testArticle = {
+				author: "rogersop",
+				title: "Mitch is at it again!",
+				topic: "mitch",
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(testArticle)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+
+		test("responds with a 400 status when given an invalid data type as an argument", () => {
+			const testArticle = {
+				author: "rogersop",
+				title: "Mitch is at it again!",
+				body: "In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask.",
+				topic: 79,
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(testArticle)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+
+		test("responds with a 400 status when posting using an empty string for one of the required parameters", () => {
+			const testArticle = {
+				author: "rogersop",
+				title: "",
+				body: "In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask.",
+				topic: "mitch"
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(testArticle)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+        });
+        
+        test("responds with a 404 status when posting an article with a non-existent topic argument", () => {
+					const testArticle = {
+						author: "rogersop",
+						title: "Mitch is at it again!",
+						body: "In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask.",
+						topic: "dogs",
+					};
+					return request(app)
+						.post("/api/articles")
+						.send(testArticle)
+						.expect(404)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Not a valid topic");
+						});
+        });
+        
+
+        test("responds with a 404 status when posting an article with an unregistered author", () => {
+					const testArticle = {
+						author: "mrblobby",
+						title: "Mitch is at it again!",
+						body: "In the latest antics of the infamous Mitch, witnesses report seeing him riding a unicycle down the High Street while yodelling the National Anthem, leaving bystanders confused yet... impressed. As usual, Mitch's hijinks continue to both entertain and vex the locals, depending on who you ask.",
+						topic: "mitch",
+					};
+					return request(app)
+						.post("/api/articles")
+						.send(testArticle)
+						.expect(404)
+						.then((response) => {
+							expect(response.body.msg).toEqual(
+								"You must register an account to post an article"
+							);
+						});
+				});
+	});
+});

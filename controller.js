@@ -8,7 +8,8 @@ const {
     selectComment,
     accessUsers,
     selectUserByUsername,
-    updateCommentVotes
+    updateCommentVotes,
+    addArticle
 } = require("./model");
 const apiCEndpointsJSON = require("./endpoints.json");
 
@@ -131,6 +132,20 @@ exports.patchCommentVotes = (request, response, next) => {
 	updateCommentVotes(comment_id, newVote)
 		.then((vote) => {
 			response.status(200).send({ vote });
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
+
+
+
+exports.postNewArticle = (request, response, next) => {
+	const { author, title, body, topic, article_img_url } = request.body;
+
+	addArticle({ author, title, body, topic, article_img_url })
+		.then((article) => {
+			response.status(201).send({ article });
 		})
 		.catch((err) => {
 			next(err);
