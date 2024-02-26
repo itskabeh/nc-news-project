@@ -614,3 +614,35 @@ describe("GET /api/articles (sorting queries)", () => {
 		});
 	});
 });
+
+
+describe("GET /api/users/:username", () => {
+	describe("behaviours", () => {
+		test("when given a username, responds with corresponding user object", () => {
+			return request(app)
+				.get("/api/users/icellusedkars")
+				.expect(200)
+				.then((response) => {
+                    const user = response.body;
+
+                    expect(user).toHaveProperty("username");
+                    expect(user.username).toEqual("icellusedkars");
+                    expect(user).toHaveProperty("avatar_url");
+                    expect(user.avatar_url).toEqual("https://avatars2.githubusercontent.com/u/24604688?s=460&v=4");
+                    expect(user).toHaveProperty("name");
+                    expect(user.name).toEqual("sam");                    
+					
+					
+				});
+		});
+	});
+	describe("error handling", () => {
+		test("responds with a 404 status when given a valid but non-existent username", () => {
+            return request(app).get("/api/users/itsmebobert").expect(404)
+                .then((response) => {
+                    expect(response.body.msg).toEqual("Please enter a valid username");
+            })
+		});
+	});
+});
+

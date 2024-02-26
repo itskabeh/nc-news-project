@@ -6,7 +6,8 @@ const {
 	addComment,
 	updateVotes,
     selectComment,
-    accessUsers
+    accessUsers,
+    selectUserByUsername
 } = require("./model");
 const apiCEndpointsJSON = require("./endpoints.json");
 
@@ -110,3 +111,13 @@ exports.getUsers = (request, response, next) => {
 };
 
 
+exports.getUserByUsername = (request, response, next) => {
+    const { username } = request.params;
+	selectUserByUsername(username)
+		.then((user) => {
+			response.status(200).send( user );
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
