@@ -4,10 +4,11 @@ const {
 	accessArticles,
 	accessComments,
 	addComment,
-	updateVotes,
+	updateArticleVotes,
     selectComment,
     accessUsers,
-    selectUserByUsername
+    selectUserByUsername,
+    updateCommentVotes
 } = require("./model");
 const apiCEndpointsJSON = require("./endpoints.json");
 
@@ -80,7 +81,7 @@ exports.postCommentOnArticle = (request, response, next) => {
 exports.patchArticleVotes = (request, response, next) => {
 	const { article_id } = request.params;
 	const newVote = request.body.inc_votes;
-	updateVotes(article_id, newVote)
+	updateArticleVotes(article_id, newVote)
 		.then((vote) => {
 			response.status(200).send({ vote });
 		})
@@ -116,6 +117,20 @@ exports.getUserByUsername = (request, response, next) => {
 	selectUserByUsername(username)
 		.then((user) => {
 			response.status(200).send( user );
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
+
+
+
+exports.patchCommentVotes = (request, response, next) => {
+	const { comment_id } = request.params;
+	const newVote = request.body.inc_votes;
+	updateCommentVotes(comment_id, newVote)
+		.then((vote) => {
+			response.status(200).send({ vote });
 		})
 		.catch((err) => {
 			next(err);

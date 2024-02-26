@@ -376,7 +376,7 @@ describe("PATCH /api/articles/:article_id", () => {
 		});
 		test("when given an invalid article id returns 400", () => {
 			const updatedVotes = {
-				inc_votes: null,
+				inc_votes: 3,
 			};
 			return request(app)
 				.patch("/api/articles/forklift")
@@ -388,7 +388,7 @@ describe("PATCH /api/articles/:article_id", () => {
 		});
 		test("when given a non-existent article id returns 404", () => {
 			const updatedVotes = {
-				inc_votes: null,
+				inc_votes: 8,
 			};
 			return request(app)
 				.patch("/api/articles/9000")
@@ -397,7 +397,19 @@ describe("PATCH /api/articles/:article_id", () => {
 				.then((response) => {
 					expect(response.body.msg).toEqual("Not Found");
 				});
-		});
+        });
+        test("when given an invalid vote type returns 400", () => {
+					const updatedVotes = {
+						inc_votes: "seven",
+					};
+					return request(app)
+						.patch("/api/articles/3")
+						.send(updatedVotes)
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+				});
 	});
 });
 
@@ -646,3 +658,117 @@ describe("GET /api/users/:username", () => {
 	});
 });
 
+describe("PATCH /api/comments/:comment_id", () => {
+	describe("behaviours", () => {
+		test("PATCH:200 takes a number argument and updates the vote value on a comment given the comment id ", () => {
+			const updatedVotes = {
+				inc_votes: 1,
+			};
+			return request(app)
+				.patch("/api/comments/2")
+				.send(updatedVotes)
+				.expect(200)
+				.then((response) => {
+					expect(response.body.vote.votes).toBe(15);
+				});
+		});
+		test("PATCH:200 takes a negative number argument and updates the vote value on an comment given the comment id ", () => {
+			const updatedVotes = {
+				inc_votes: -1,
+			};
+			return request(app)
+				.patch("/api/comments/17")
+				.send(updatedVotes)
+				.expect(200)
+				.then((response) => {
+					expect(response.body.vote.votes).toBe(19);
+				});
+		});
+		test("PATCH:200 takes an argument with no added value and the vote value stays the same", () => {
+			const updatedVotes = {
+				inc_votes: 0,
+			};
+			return request(app)
+				.patch("/api/comments/16")
+				.send(updatedVotes)
+				.expect(200)
+				.then((response) => {
+					expect(response.body.vote.votes).toBe(1);
+				});
+		});
+
+		test("works when the comment does not currently have any votes to display", () => {
+			const updatedVotes = {
+				inc_votes: 1,
+			};
+			return request(app)
+				.patch("/api/comments/5")
+				.send(updatedVotes)
+				.expect(200)
+				.then((response) => {
+					expect(response.body.vote.votes).toBe(1);
+				});
+		});
+	});
+	describe("Error handling", () => {
+		test("takes an empty object and returns 400", () => {
+			const updatedVotes = {};
+			return request(app)
+				.patch("/api/comments/3")
+				.send(updatedVotes)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+
+		test("takes an object with null value and returns 400", () => {
+			const updatedVotes = {
+				inc_votes: null
+			};
+			return request(app)
+				.patch("/api/comments/1")
+				.send(updatedVotes)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+		test("when given an invalid comment id returns 400", () => {
+			const updatedVotes = {
+				inc_votes: 1,
+			};
+			return request(app)
+				.patch("/api/comments/forklift")
+				.send(updatedVotes)
+				.expect(400)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Bad request");
+				});
+		});
+		test("when given a non-existent comment id returns 404", () => {
+			const updatedVotes = {
+				inc_votes: -1,
+			};
+			return request(app)
+				.patch("/api/comments/9000")
+				.send(updatedVotes)
+				.expect(404)
+				.then((response) => {
+					expect(response.body.msg).toEqual("Not Found");
+				});
+        });
+        test("when given an invalid vote type returns 400", () => {
+					const updatedVotes = {
+						inc_votes: "one",
+					};
+					return request(app)
+						.patch("/api/comments/2")
+						.send(updatedVotes)
+						.expect(400)
+						.then((response) => {
+							expect(response.body.msg).toEqual("Bad request");
+						});
+				});
+	});
+});
