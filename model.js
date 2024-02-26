@@ -219,7 +219,29 @@ exports.accessUsers = () => {
 
 
 
+exports.selectUserByUsername = (username) => {
 
-
- 
+    return Promise.resolve(
+        db.query(
+            `
+        SELECT * 
+        FROM users
+        WHERE username = $1
+        `,
+            [username]
+        )
+    ).then((response) => {
+        if (response.rowCount === 0) {
+            return Promise.reject({ status: 404, msg: "Please enter a valid username" });
+        } else {
+            return db.query(`
+    SELECT * 
+    FROM users
+    WHERE username = $1
+    ;`, [username]).then((response) => {
+                return response.rows[0];
+            });
+        }
+    })
+}
     
