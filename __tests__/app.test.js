@@ -791,7 +791,6 @@ describe("POST /api/articles", () => {
 				.expect(201)
 				.then((response) => {
                     const article = response.body.article;
-                    console.log(article, "<<< article in test")
 
                     expect(article.article_id).toBe(14);
                     expect(article.title).toEqual("Mitch is at it again!");
