@@ -33,7 +33,7 @@ exports.selectArticleById = (id) => {
 
 
 
-exports.accessArticles = (topic, sort_by = "created_at", order = "desc") => {
+exports.accessArticles = (topic, sort_by = "created_at", order = "desc", limit = 10, p) => {
 
 
     const validSortBys = ['author', 'title', 'topic', 'created_at', 'votes', 'comment_count']
@@ -44,6 +44,9 @@ exports.accessArticles = (topic, sort_by = "created_at", order = "desc") => {
     }
 
     if (!validOrders.includes(order)) {
+			return Promise.reject({ status: 400, msg: "Bad request" });
+    }
+    if (!typeof limit === 'number' || !typeof p === 'number') {
 			return Promise.reject({ status: 400, msg: "Bad request" });
 		}
 
@@ -65,6 +68,14 @@ exports.accessArticles = (topic, sort_by = "created_at", order = "desc") => {
     if (topic) {
         queryStr += ' WHERE articles.topic = $1';
         queryValues.push(topic);
+    }
+    
+    if (limit && p) {
+            queryParams.push(limit, p);
+            selectQuery += `
+        LIMIT ${limit}
+        OFFSET ${p}
+        `;
     }
 
     queryStr += ' GROUP BY articles.article_id'
